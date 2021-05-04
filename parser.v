@@ -3,7 +3,14 @@ module parser
 // Represents an S-Expression (aka Abstract Syntax Tree / Tokens)
 pub type SExp = Atom | []SExp
 
-pub type Atom = string | int | bool
+pub type Atom = Identifier | int | bool 
+
+
+
+pub struct Identifier {
+pub:
+	name string
+}
 
 // Parses a string into a valid S-Expression
 pub fn parse(str string) SExp {
@@ -44,15 +51,15 @@ fn parse_helper(str string, idx int) ParseResult {
 
 	// else its just a SExp
 	mut ptr := idx
-	for (str[ptr] in whitespace) {
+	for (ptr < str.len && str[ptr] in whitespace) {
 		ptr += 1
 	}
 	start := ptr
-	for str[ptr] !in parser_delimiters {
+	for ptr < str.len && str[ptr] !in parser_delimiters {
 		ptr += 1
 	}
 	end := ptr
-	for (str[ptr] in whitespace) {
+	for (ptr < str.len && str[ptr] in whitespace) {
 		ptr += 1
 	}
 
@@ -65,7 +72,7 @@ fn parse_helper(str string, idx int) ParseResult {
 		return ParseResult{Atom(str_to_bool(raw_atom)), ptr}
 	}
 	else {
-		return ParseResult{Atom(raw_atom), ptr}
+		return ParseResult{Atom(Identifier{raw_atom}), ptr}
 	}
 }
 
