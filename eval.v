@@ -1,8 +1,40 @@
 module eval
 import parser
 
-type Expression = int | string | bool | []Expression // or a function...
+type Expression = int | string | bool | []Expression | Function // or a function...
 
+fn expression_to_string(e Expression) string {
+	match e {
+		string {
+			return e
+		}
+		else {
+			panic("die")
+		}
+	}
+}
+
+fn expression_to_int(e Expression) int {
+	match e {
+		int {
+			return e
+		}
+		else {
+			panic("die")
+		}
+	}
+}
+
+fn expression_to_function(e Expression) Function {
+	match e {
+		Function {
+			return e
+		}
+		else {
+			panic("die")
+		}
+	}
+}
 
 type Environment = Frame | Empty
 
@@ -13,18 +45,32 @@ struct Frame {
 }
 
 
-struct Function {
-	pointer int
+type Function = fn(args []Expression, env Environment)  Expression
+
+
+fn add(args []Expression) Expression {
+	mut sum := 0
+
+	for expr in args {
+		sum += expression_to_int(expr)
+	}
+	
+	return sum
 }
 
-fn add(x int, y int) Expression {
-	return Expression(x+y)
+fn sub(args []Expression) Expression {
+	if args[0] is int && args[1] is int {
+		return Expression(expression_to_int(args[0])+expression_to_int(args[1]))
+	}
+	panic("Error: args must be 2 ints")
 }
+
 
 fn create_standard_environment() Frame {
 	mapping := map{
 		'x': Expression(42)
 		'y': Expression(true)
+		'+': Expression(Function(add))
 	}
 	return Frame{Empty{}, mapping}
 }
@@ -39,14 +85,9 @@ pub fn eval(s_exp parser.SExp) Expression {
 fn eval_helper(s_exp parser.SExp, env Environment) Expression {
 	match s_exp {
 		[]parser.SExp {
-			mut evaluated := []Expression{}
-			for i in 0 .. s_exp.len {
-				evaluated[i] = eval_helper(s_exp[i], env)
-			}
-
-			// typecheck: must be of form (operator [operand ...]), i.e. (+ 1 1)
-			return Expression(false)
-
+			evaluated := s_exp.map(eval_helper(it, env))
+			f := expression_to_function(evaluated[0])
+			return f(evaluated[1..], env)
 		}
 		parser.Atom {
 			match s_exp {

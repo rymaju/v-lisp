@@ -11,10 +11,25 @@ fn f(arr []int) int {
 
 
 fn main() {
-	println(eval.eval(parser.parse("1")))
-	println(eval.eval(parser.parse("x")))
-	println(eval.eval(parser.parse("#t")))
-	println(eval.eval(parser.parse("#f")))
+	// println(call_func(voidptr(add), 1, 2))
+	println(parser.parse("(+ 1 1)"))
+
+	// println(eval.eval(parser.parse("1")))
+	println(eval.eval(parser.parse("(+ 1 1)")))
+	println(eval.eval(parser.parse("(+ 1 100)")))
+
+	// outer := 10
+	// nums := [1,2,3]
+	
+	// println(nums.map(it + outer)) // works just fine :D
+
+	// println(nums.map(fn (inner int) int { return inner + outer})) // Error: Unidentified ident "outer"
+	
+	
+
+
+	// println(eval.eval(parser.parse("#t")))
+	// println(eval.eval(parser.parse("#f")))
 	//println(eval.eval(parser.parse("(+ 1 1)")))
 
 }
