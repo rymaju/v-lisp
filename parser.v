@@ -44,7 +44,11 @@ fn parse_helper(str string, idx int) ParseResult {
 			stack << result.result
 			ptr = result.next
 		}
+		
 		ptr += 1
+		for (ptr < str.len && str[ptr] in whitespace) {
+			ptr += 1
+		}
 
 		return ParseResult{stack, ptr}
 	}
@@ -64,6 +68,9 @@ fn parse_helper(str string, idx int) ParseResult {
 	}
 
 	raw_atom := str[start..end]
+	if raw_atom.len == 0 {
+		panic("Error: parsing empty token at $idx\nstr: $str")
+	}
 
 	if is_numeric(raw_atom) {
 		return ParseResult{Atom(raw_atom.int()), ptr}
