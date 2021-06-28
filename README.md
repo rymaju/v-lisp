@@ -23,7 +23,7 @@ Pretty simple, first we tokenize the input string into a tree of tokens, then we
 ### Get Started
 
 #### `v run .`
-Compiles and runs everything in main.
+Compiles and runs everything in main. Currently this just starts a REPL.
 
 #### `v test .`
 Runs all tests
